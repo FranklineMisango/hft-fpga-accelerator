@@ -12,6 +12,11 @@ Batch Data Fetching: Instead of fetching data for each symbol individually, I co
 Caching: I implement caching for fetched data to avoid re-fetching the same data multiple times.
 ## Profiling and Benchmarking
 Profiling: I measure the execution time of my backtest function to identify bottlenecks and optimize performance by changing from CUDA to CPU and comparing
+Tools at disposal : 
+* cProfile
+* line_profiler
+* py-spy
+* NVIDIA nvprof
 ## Improved Algorithm Efficiency
 Vectorization: I ensure that as many operations as possible are vectorized. Libraries like NumPy and CuPy are optimized for such operations.
 Avoiding Loops: I try to minimize the use of Python loops, especially in critical sections of the code. I use array operations instead.
