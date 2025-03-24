@@ -12,6 +12,11 @@ Batch Data Fetching: Instead of fetching data for each symbol individually, I co
 Caching: I implement caching for fetched data to avoid re-fetching the same data multiple times.
 ## Profiling and Benchmarking
 Profiling: I measure the execution time of my backtest function to identify bottlenecks and optimize performance by changing from CUDA to CPU and comparing
+Tools at disposal : 
+* cProfile
+* line_profiler
+* py-spy
+* NVIDIA nvprof
 ## Improved Algorithm Efficiency
 Vectorization: I ensure that as many operations as possible are vectorized. Libraries like NumPy and CuPy are optimized for such operations.
 Avoiding Loops: I try to minimize the use of Python loops, especially in critical sections of the code. I use array operations instead.
@@ -23,3 +28,8 @@ Numba: Beyond @cuda.jit, I can also use @njit for CPU optimizations where GPU is
 Data Types: I use the smallest data types necessary for my calculations (e.g., float32 instead of float64) to reduce memory usage and improve performance.
 ## Asynchronous Execution
 Asynchronous Data Fetching: I use asynchronous programming (e.g., asyncio) to fetch data while performing other computations, effectively overlapping I/O and computation.
+
+## My Learning Pathways 
+[TechnicalLab by Nvidia](https://developer.nvidia.com/blog/gpu-accelerate-algorithmic-trading-simulations-by-over-100x-with-numba/)
+[QFin by Nvidia](https://developer.nvidia.com/blog/introduction-to-gpu-accelerated-python-for-financial-services/)
+[gQuants](https://medium.com/rapids-ai/gquant-gpu-accelerated-examples-for-quantitative-analyst-tasks-8b6de44c0ac2)
