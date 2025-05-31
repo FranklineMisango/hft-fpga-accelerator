@@ -30,6 +30,6 @@ Data Types: I use the smallest data types necessary for my calculations (e.g., f
 Asynchronous Data Fetching: I use asynchronous programming (e.g., asyncio) to fetch data while performing other computations, effectively overlapping I/O and computation.
 
 ## My Learning Pathways 
-[TechnicalLab by Nvidia](https://developer.nvidia.com/blog/gpu-accelerate-algorithmic-trading-simulations-by-over-100x-with-numba/)
-[QFin by Nvidia](https://developer.nvidia.com/blog/introduction-to-gpu-accelerated-python-for-financial-services/)
-[gQuants](https://medium.com/rapids-ai/gquant-gpu-accelerated-examples-for-quantitative-analyst-tasks-8b6de44c0ac2)
+* [TechnicalLab by Nvidia](https://developer.nvidia.com/blog/gpu-accelerate-algorithmic-trading-simulations-by-over-100x-with-numba/)
+* [QFin by Nvidia](https://developer.nvidia.com/blog/introduction-to-gpu-accelerated-python-for-financial-services/)
+* [gQuants](https://medium.com/rapids-ai/gquant-gpu-accelerated-examples-for-quantitative-analyst-tasks-8b6de44c0ac2)
