@@ -48,8 +48,7 @@ Open-source Verilog/VHDL components for building FPGA-based trading systems. Imp
         * Passing testbench simulations.
         * Synthesis reports for target FPGAs.
 
-### License
-MIT License (see LICENSE.md). Commercial use requires attribution.
-
-### Disclaimer
-Not responsible for trading losses or exchange compliance violations.
+## My Learning Pathways 
+[TechnicalLab by Nvidia](https://developer.nvidia.com/blog/gpu-accelerate-algorithmic-trading-simulations-by-over-100x-with-numba/)
+[QFin by Nvidia](https://developer.nvidia.com/blog/introduction-to-gpu-accelerated-python-for-financial-services/)
+[gQuants](https://medium.com/rapids-ai/gquant-gpu-accelerated-examples-for-quantitative-analyst-tasks-8b6de44c0ac2)
