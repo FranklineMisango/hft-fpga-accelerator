@@ -78,6 +78,116 @@ P99 latency: 128.5 ns
 Throughput: 1.2M orders/sec
 ```
 
+### HDL Simulation Environment
+For hardware-level simulation with virtual FPGA simulators:
+
+1. **Install Dependencies**:
+   ```bash
+   # Ubuntu/Debian
+   sudo apt install iverilog gtkwave verilator
+   
+   # macOS
+   brew install icarus-verilog gtkwave verilator
+   ```
+
+2. **Run HDL Simulations**:
+   ```bash
+   cd hdl_simulation
+   make all                    # Run all tests
+   make iverilog              # Icarus Verilog tests
+   make verilator             # Verilator tests
+   ```
+
+3. **Automated Testing**:
+   ```bash
+   cd hdl_simulation
+   ./run_simulation.py --simulator both
+   ```
+
+4. **Waveform Analysis**:
+   ```bash
+   make wave                  # View with GTKWave
+   ```
+
+#### HDL Simulation Features
+- **Open-source simulators**: Icarus Verilog and Verilator support
+- **Comprehensive testbenches**: Market data, order management, strategies
+- **C++ co-simulation**: High-performance Verilator integration
+- **Performance benchmarking**: Latency and throughput analysis
+- **Automated testing**: Regression suite and CI/CD ready
+- **Docker environment**: Reproducible simulation setup
+
+#### HDL Test Coverage
+- ✅ Market data processing (ITCH/FIX protocols)
+- ✅ Order management and execution
+- ✅ Trading strategy engines
+- ✅ Risk management systems
+- ✅ End-to-end integration testing
+- ✅ Performance characterization
+
+#### HDL Performance Results
+```
+=== HDL Simulation Results ===
+Market Data Latency: 16-32 ns
+Order Processing: 32-64 ns
+End-to-End Latency: 64-128 ns
+Throughput: 1M+ orders/sec
+Clock Frequency: 250 MHz
+```
+
+## 🚀 Advanced Tools & Features
+
+### Real-time Monitoring & Visualization
+- **Interactive Dashboard**: Streamlit-based real-time monitoring
+- **Web Interface**: Flask-based monitoring with WebSocket support
+- **Performance Profiler**: Comprehensive performance analysis
+- **GPU-FPGA Bridge**: Hybrid acceleration pipeline
+
+### Advanced Market Data
+- **Protocol Support**: NASDAQ ITCH 5.0, FIX 4.4, OUCH 4.2
+- **Realistic Timing**: Hardware-accurate latency simulation
+- **Burst Testing**: High-frequency stress testing
+- **Statistical Analysis**: Comprehensive performance metrics
+
+### Usage Examples
+
+#### Launch Real-time Dashboard:
+```bash
+cd fpga_simulation
+make dashboard
+# Opens at http://localhost:8501
+```
+
+#### Start Web Monitor:
+```bash
+cd fpga_simulation
+make web-monitor
+# Opens at http://localhost:5000
+```
+
+#### Run Performance Profiler:
+```bash
+cd fpga_simulation
+make profiler
+# Generates comprehensive performance reports
+```
+
+#### Test GPU-FPGA Bridge:
+```bash
+cd fpga_simulation
+make gpu-bridge
+# Tests hybrid acceleration pipeline
+```
+
+### Advanced Features
+- **GPU Acceleration**: CuPy/CUDA integration for batch processing
+- **Protocol Simulation**: Binary protocol parsing and generation
+- **Performance Analytics**: Statistical analysis and reporting
+- **Load Testing**: Configurable stress testing scenarios
+- **Real-time Alerts**: Performance threshold monitoring
+
+For detailed documentation on advanced features, see [Advanced Tools Guide](fpga_simulation/ADVANCED_TOOLS_GUIDE.md).
+
 ---
 ## Contributing
 1. Report Issues: Use GitHub Issues for bugs/feature requests.

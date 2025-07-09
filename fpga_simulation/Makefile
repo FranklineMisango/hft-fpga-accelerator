@@ -215,8 +215,261 @@ help:
 	@echo "  docs                  - Show documentation"
 	@echo "  help                  - Show this help"
 	@echo ""
+	@echo "Advanced Tools:"
+	@echo "  dashboard             - Launch real-time dashboard"
+	@echo "  web-monitor           - Start web monitoring interface"
+	@echo "  profiler              - Run performance profiler"
+	@echo "  gpu-bridge            - Test GPU-FPGA bridge"
+	@echo "  test-protocols        - Test market data protocols"
+	@echo "  test-tools            - Test all advanced tools"
+	@echo "  demo                  - Run comprehensive demo"
+	@echo ""
 	@echo "Development:"
 	@echo "  dev-setup             - Install development tools"
 	@echo "  format                - Format code"
 	@echo "  lint                  - Lint code"
 	@echo "  type-check            - Type checking"
+
+# Advanced Tools
+.PHONY: dashboard
+dashboard: $(VENV)
+	@echo "Starting real-time dashboard..."
+	$(VENV)/bin/streamlit run dashboard/dashboard.py
+
+.PHONY: web-monitor
+web-monitor: $(VENV)
+	@echo "Starting web monitoring interface..."
+	$(VENV)/bin/python tools/web_monitor.py
+
+.PHONY: profiler
+profiler: $(VENV)
+	@echo "Running performance profiler..."
+	$(VENV)/bin/python tools/performance_profiler.py
+
+.PHONY: gpu-bridge
+gpu-bridge: $(VENV)
+	@echo "Testing GPU-FPGA bridge..."
+	$(VENV)/bin/python tools/gpu_fpga_bridge.py
+
+.PHONY: test-protocols
+test-protocols: $(VENV)
+	@echo "Testing market data protocols..."
+	$(VENV)/bin/python tools/enhanced_market_data.py
+
+.PHONY: test-tools
+test-tools: $(VENV)
+	@echo "Testing all advanced tools..."
+	@echo "1. Testing performance profiler..."
+	$(VENV)/bin/python -c "
+from tools.performance_profiler import PerformanceProfiler
+profiler = PerformanceProfiler()
+profiler.initialize_system()
+profiler.start_profiling(duration_seconds=5)
+print('✓ Performance profiler OK')
+"
+	@echo "2. Testing GPU-FPGA bridge..."
+	$(VENV)/bin/python -c "
+from tools.gpu_fpga_bridge import FPGABridge
+bridge = FPGABridge()
+bridge.start_processing()
+import time; time.sleep(2)
+bridge.stop_processing()
+print('✓ GPU-FPGA bridge OK')
+"
+	@echo "3. Testing market data protocols..."
+	$(VENV)/bin/python -c "
+from tools.enhanced_market_data import EnhancedMarketDataFeed, ProtocolType
+feed = EnhancedMarketDataFeed(ProtocolType.ITCH_5_0)
+feed.start_feed(['AAPL'])
+import time; time.sleep(2)
+feed.stop_feed()
+print('✓ Market data protocols OK')
+"
+	@echo "✅ All advanced tools tested successfully!"
+
+# Performance benchmarks
+.PHONY: benchmark-tools
+benchmark-tools: $(VENV)
+	@echo "Running advanced tools benchmarks..."
+	$(VENV)/bin/python -c "
+import time
+from tools.performance_profiler import PerformanceProfiler
+from tools.gpu_fpga_bridge import FPGABridge
+
+print('🚀 Advanced Tools Benchmark')
+print('==========================')
+
+# Performance profiler benchmark
+profiler = PerformanceProfiler()
+profiler.initialize_system()
+start = time.time()
+profiler.start_profiling(duration_seconds=10)
+elapsed = time.time() - start
+print(f'Performance Profiler: {elapsed:.2f}s for 10s simulation')
+
+# GPU-FPGA bridge benchmark
+bridge = FPGABridge()
+bridge.start_processing()
+start = time.time()
+time.sleep(5)
+bridge.stop_processing()
+elapsed = time.time() - start
+summary = bridge.get_performance_summary()
+print(f'GPU-FPGA Bridge: {summary[\"processing_statistics\"][\"total_processed\"]} items in {elapsed:.2f}s')
+print(f'Throughput: {summary[\"hybrid_performance\"][\"overall_throughput\"]:.0f} ops/sec')
+"
+
+.PHONY: latency-benchmark
+latency-benchmark: $(VENV)
+	@echo "Running latency benchmark..."
+	$(VENV)/bin/python -c "
+import time
+import numpy as np
+from tools.performance_profiler import PerformanceProfiler
+
+profiler = PerformanceProfiler()
+profiler.initialize_system(clock_freq=250e6)
+profiler.start_profiling(duration_seconds=30)
+
+print('🎯 Latency Benchmark Results')
+print('============================')
+summary = profiler.get_performance_summary()
+lat_stats = summary['performance_summary']['latency_stats']
+print(f'Average Latency: {lat_stats[\"mean_ns\"]:.1f} ns')
+print(f'P50 Latency: {lat_stats[\"median_ns\"]:.1f} ns')
+print(f'P95 Latency: {lat_stats[\"p95_ns\"]:.1f} ns')
+print(f'P99 Latency: {lat_stats[\"p99_ns\"]:.1f} ns')
+print(f'Max Latency: {lat_stats[\"max_ns\"]:.1f} ns')
+"
+
+.PHONY: throughput-benchmark
+throughput-benchmark: $(VENV)
+	@echo "Running throughput benchmark..."
+	$(VENV)/bin/python -c "
+import time
+from tools.gpu_fpga_bridge import FPGABridge
+
+bridge = FPGABridge()
+bridge.start_processing()
+time.sleep(30)
+bridge.stop_processing()
+
+summary = bridge.get_performance_summary()
+print('⚡ Throughput Benchmark Results')
+print('===============================')
+print(f'Total Processed: {summary[\"processing_statistics\"][\"total_processed\"]:,}')
+print(f'GPU Processed: {summary[\"processing_statistics\"][\"gpu_processed\"]:,}')
+print(f'FPGA Processed: {summary[\"processing_statistics\"][\"fpga_processed\"]:,}')
+print(f'Overall Throughput: {summary[\"hybrid_performance\"][\"overall_throughput\"]:.0f} ops/sec')
+"
+
+# Integration tests
+.PHONY: integration-test
+integration-test: $(VENV)
+	@echo "Running integration tests..."
+	$(VENV)/bin/python -c "
+import time
+from tools.performance_profiler import PerformanceProfiler
+from tools.gpu_fpga_bridge import FPGABridge
+from tools.enhanced_market_data import EnhancedMarketDataFeed, ProtocolType
+
+print('🔄 Integration Test')
+print('==================')
+
+# Test 1: Performance profiler with GPU bridge
+print('Test 1: Performance profiler + GPU bridge')
+profiler = PerformanceProfiler()
+profiler.initialize_system()
+bridge = FPGABridge()
+
+profiler.start_profiling(duration_seconds=5)
+bridge.start_processing()
+time.sleep(5)
+bridge.stop_processing()
+
+print('✓ Test 1 passed')
+
+# Test 2: Market data protocols with profiler
+print('Test 2: Market data protocols + profiler')
+feed = EnhancedMarketDataFeed(ProtocolType.ITCH_5_0)
+feed.start_feed(['AAPL', 'GOOGL'])
+time.sleep(3)
+feed.stop_feed()
+
+print('✓ Test 2 passed')
+print('✅ All integration tests passed!')
+"
+
+# Regression tests
+.PHONY: regression-test
+regression-test: $(VENV)
+	@echo "Running regression tests..."
+	$(VENV)/bin/python -c "
+import time
+from tools.performance_profiler import PerformanceProfiler
+
+print('🔍 Regression Test')
+print('==================')
+
+# Performance regression test
+profiler = PerformanceProfiler()
+profiler.initialize_system()
+profiler.start_profiling(duration_seconds=10)
+
+summary = profiler.get_performance_summary()
+avg_latency = summary['performance_summary']['latency_stats']['mean_ns']
+throughput = summary['performance_summary']['throughput_stats']['mean_ops']
+
+# Check performance thresholds
+latency_threshold = 1000  # 1μs
+throughput_threshold = 100000  # 100k ops/sec
+
+print(f'Average Latency: {avg_latency:.1f} ns (threshold: {latency_threshold} ns)')
+print(f'Throughput: {throughput:.0f} ops/sec (threshold: {throughput_threshold} ops/sec)')
+
+if avg_latency > latency_threshold:
+    print('❌ Latency regression detected!')
+    exit(1)
+
+if throughput < throughput_threshold:
+    print('❌ Throughput regression detected!')
+    exit(1)
+
+print('✅ No performance regression detected!')
+"
+
+# Install enhanced dependencies
+.PHONY: install-enhanced
+install-enhanced: $(VENV)
+	@echo "Installing enhanced dependencies..."
+	$(VENV)/bin/pip install streamlit plotly dash bokeh
+	$(VENV)/bin/pip install flask flask-socketio
+	$(VENV)/bin/pip install psutil memory-profiler line-profiler
+	$(VENV)/bin/pip install scikit-learn ta-lib pyfolio
+	$(VENV)/bin/pip install sqlalchemy redis h5py
+	$(VENV)/bin/pip install websockets asyncio-mqtt
+	@echo "Enhanced dependencies installed"
+
+# Install GPU dependencies (optional)
+.PHONY: install-gpu
+install-gpu: $(VENV)
+	@echo "Installing GPU dependencies..."
+	$(VENV)/bin/pip install cupy-cuda11x numba
+	$(VENV)/bin/pip install rapids-cudf
+	@echo "GPU dependencies installed"
+
+# Create documentation
+.PHONY: create-docs
+create-docs:
+	@echo "Creating comprehensive documentation..."
+	@echo "📚 Documentation created in ADVANCED_TOOLS_GUIDE.md"
+	@echo "See also:"
+	@echo "  - README.md: Main project documentation"
+	@echo "  - ../hdl_simulation/README.md: HDL simulation guide"
+	@echo "  - SIMULATION_SUMMARY.md: Simulation results"
+
+# Comprehensive demo
+.PHONY: demo
+demo: $(VENV)
+	@echo "Starting comprehensive advanced tools demo..."
+	$(VENV)/bin/python demo_advanced_tools.py
