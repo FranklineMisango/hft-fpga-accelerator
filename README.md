@@ -40,7 +40,46 @@ Open-source Verilog/VHDL components for building FPGA-based trading systems. Imp
     ```bash
     vivado -mode batch -source scripts/synth_zynq.tcl  
 
-### Contributing
+### Python FPGA Simulation
+For comprehensive trading system simulation without hardware:
+
+1. **Quick Start**:
+   ```bash
+   cd fpga_simulation
+   python3 simple_example.py
+   ```
+
+2. **Full Simulation Setup**:
+   ```bash
+   cd fpga_simulation
+   make setup
+   make simulate
+   ```
+
+3. **Performance Testing**:
+   ```bash
+   cd fpga_simulation
+   make benchmark
+   ```
+
+#### Simulation Features
+- **Hardware-accurate timing**: Sub-microsecond latency modeling
+- **Multiple trading strategies**: Arbitrage, market making, TWAP/VWAP
+- **Real-time market data**: Configurable tick rates and protocols
+- **Performance analysis**: Latency statistics and throughput metrics
+- **Risk management**: Position limits and pre-trade checks
+
+#### Example Results
+```
+=== Simulation Results ===
+Total trades: 15,420
+Average latency: 45.2 ns
+P99 latency: 128.5 ns
+Throughput: 1.2M orders/sec
+```
+
+---
+## Contributing
 1. Report Issues: Use GitHub Issues for bugs/feature requests.
 2. Development Flow:
     * Branch naming: feat/itch-parser or fix/orderbook-bug.
