@@ -1,0 +1,69 @@
+{
+  "summary": {
+    "total_time": 0.5353648662567139,
+    "timestamp": 1752096422.266479,
+    "simulators": {
+      "iverilog": {
+        "total_tests": 3,
+        "passed": 0,
+        "failed": 3,
+        "pass_rate": 0.0
+      },
+      "verilator": {
+        "total_tests": 4,
+        "passed": 0,
+        "failed": 4,
+        "pass_rate": 0.0
+      }
+    }
+  },
+  "detailed_results": {
+    "iverilog": {
+      "market_data_tb": {
+        "status": "FAILED",
+        "phase": "compile",
+        "compile_time": 0.02588200569152832,
+        "error": "warning: Some design elements have no explicit time unit and/or\n       : time precision. This may cause confusing timing results.\n       : Affected design elements are:\n       :   -- module market_data_processor declared here: rtl/market_data_processor.v:12\ntestbench/market_data_tb.v:66: error: port ``order_valid'' is not a port of dut.\ntestbench/market_data_tb.v:66: error: port ``order_symbol'' is not a port of dut.\ntestbench/market_data_tb.v:66: error: port ``order_price'' is not a port of dut.\ntestbench/market_data_tb.v:66: error: port ``order_volume'' is not a port of dut.\ntestbench/market_data_tb.v:66: error: port ``order_type'' is not a port of dut.\ntestbench/market_data_tb.v:66: error: port ``book_bid'' is not a port of dut.\ntestbench/market_data_tb.v:66: error: port ``book_ask'' is not a port of dut.\ntestbench/market_data_tb.v:66: error: port ``error_flag'' is not a port of dut.\ntestbench/market_data_tb.v:66: error: port ``error_code'' is not a port of dut.\n9 error(s) during elaboration.\n"
+      },
+      "order_manager_tb": {
+        "status": "FAILED",
+        "phase": "compile",
+        "compile_time": 0.024816036224365234,
+        "error": "rtl/order_manager.v:152: syntax error\nrtl/order_manager.v:152: error: Malformed statement\ntestbench/order_manager_tb.v:272: syntax error\ntestbench/order_manager_tb.v:272: error: Malformed statement\n"
+      },
+      "trading_strategy_tb": {
+        "status": "FAILED",
+        "phase": "compile",
+        "compile_time": 0.024238109588623047,
+        "error": "rtl/trading_strategy.v:131: syntax error\nrtl/trading_strategy.v:131: error: Malformed statement\n"
+      }
+    },
+    "verilator": {
+      "market_data_tb": {
+        "status": "FAILED",
+        "phase": "build",
+        "build_time": 0.12662982940673828,
+        "error": "%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'tick_valid'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:31:37: ... Location of port declaration\n   31 |     output reg                      tick_valid,\n      |                                     ^~~~~~~~~~\n                     ... For warning description see https://verilator.org/warn/PINMISSING?v=5.038\n                     ... Use \"/* verilator lint_off PINMISSING */\" and lint_on around source to disable this message.\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'symbol'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:32:37: ... Location of port declaration\n   32 |     output reg  [SYMBOL_WIDTH-1:0]  symbol,\n      |                                     ^~~~~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'price'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:33:37: ... Location of port declaration\n   33 |     output reg  [PRICE_WIDTH-1:0]   price,\n      |                                     ^~~~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'volume'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:34:37: ... Location of port declaration\n   34 |     output reg  [VOLUME_WIDTH-1:0]  volume,\n      |                                     ^~~~~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'bid'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:35:37: ... Location of port declaration\n   35 |     output reg  [PRICE_WIDTH-1:0]   bid,\n      |                                     ^~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'ask'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:36:37: ... Location of port declaration\n   36 |     output reg  [PRICE_WIDTH-1:0]   ask,\n      |                                     ^~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'timestamp'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:37:37: ... Location of port declaration\n   37 |     output reg  [63:0]              timestamp,\n      |                                     ^~~~~~~~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'book_price'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:42:37: ... Location of port declaration\n   42 |     output reg  [PRICE_WIDTH-1:0]   book_price,\n      |                                     ^~~~~~~~~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'book_side'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:44:37: ... Location of port declaration\n   44 |     output reg                      book_side,       \n      |                                     ^~~~~~~~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'book_action'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:45:37: ... Location of port declaration\n   45 |     output reg  [2:0]               book_action,     \n      |                                     ^~~~~~~~~~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'packets_processed'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:48:37: ... Location of port declaration\n   48 |     output wire [31:0]              packets_processed,\n      |                                     ^~~~~~~~~~~~~~~~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'parse_errors'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:49:37: ... Location of port declaration\n   49 |     output wire [31:0]              parse_errors,\n      |                                     ^~~~~~~~~~~~\n%Warning-PINMISSING: testbench/market_data_tb.v:66:7: Instance has missing pin: 'pipeline_depth'\n   66 |     ) dut (\n      |       ^~~\n                     rtl/market_data_processor.v:50:37: ... Location of port declaration\n   50 |     output wire [15:0]              pipeline_depth\n      |                                     ^~~~~~~~~~~~~~\n%Warning-TIMESCALEMOD: rtl/market_data_processor.v:12:8: Timescale missing on this module as other modules have it (IEEE 1800-2023 3.14.2.3)\n   12 | module market_data_processor #(\n      |        ^~~~~~~~~~~~~~~~~~~~~\n                       testbench/market_data_tb.v:14:8: ... Location of module with timescale\n   14 | module market_data_tb;\n      |        ^~~~~~~~~~~~~~\n                       ... For warning description see https://verilator.org/warn/TIMESCALEMOD?v=5.038\n                       ... Use \"/* verilator lint_off TIMESCALEMOD */\" and lint_on around source to disable this message.\n%Error-PINNOTFOUND: testbench/market_data_tb.v:73:10: Pin not found: 'order_valid'\n   73 |         .order_valid(order_valid),\n      |          ^~~~~~~~~~~\n                    ... For error description see https://verilator.org/warn/PINNOTFOUND?v=5.038\n%Error-PINNOTFOUND: testbench/market_data_tb.v:74:10: Pin not found: 'order_symbol'\n   74 |         .order_symbol(order_symbol),\n      |          ^~~~~~~~~~~~\n%Error-PINNOTFOUND: testbench/market_data_tb.v:75:10: Pin not found: 'order_price'\n   75 |         .order_price(order_price),\n      |          ^~~~~~~~~~~\n%Error-PINNOTFOUND: testbench/market_data_tb.v:76:10: Pin not found: 'order_volume'\n   76 |         .order_volume(order_volume),\n      |          ^~~~~~~~~~~~\n%Error-PINNOTFOUND: testbench/market_data_tb.v:77:10: Pin not found: 'order_type'\n   77 |         .order_type(order_type),\n      |          ^~~~~~~~~~\n%Error-PINNOTFOUND: testbench/market_data_tb.v:80:10: Pin not found: 'book_bid'\n                                                    : ... Suggested alternative: 'book_side'\n   80 |         .book_bid(book_bid),\n      |          ^~~~~~~~\n%Error-PINNOTFOUND: testbench/market_data_tb.v:81:10: Pin not found: 'book_ask'\n   81 |         .book_ask(book_ask),\n      |          ^~~~~~~~\n%Error-PINNOTFOUND: testbench/market_data_tb.v:83:10: Pin not found: 'error_flag'\n   83 |         .error_flag(error_flag),\n      |          ^~~~~~~~~~\n%Error-PINNOTFOUND: testbench/market_data_tb.v:84:10: Pin not found: 'error_code'\n   84 |         .error_code(error_code)\n      |          ^~~~~~~~~~\n%Error: Exiting due to 9 error(s)\n"
+      },
+      "order_manager_tb": {
+        "status": "FAILED",
+        "phase": "build",
+        "build_time": 0.10493183135986328,
+        "error": "%Error: rtl/order_manager.v:152:17: syntax error, unexpected IDENTIFIER, expecting \"'{\"\n  152 |         integer i;\n      |                 ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=5.038 for more assistance.\n%Error: testbench/order_manager_tb.v:272:24: Number is missing value digits: 32'h\n  272 |             order_id = 32'hRISK0001;\n      |                        ^~~~\n%Error: testbench/order_manager_tb.v:272:28: syntax error, unexpected IDENTIFIER, expecting ';'\n  272 |             order_id = 32'hRISK0001;\n      |                            ^~~~~~~~\n%Error: Exiting due to 3 error(s)\n"
+      },
+      "trading_strategy_tb": {
+        "status": "FAILED",
+        "phase": "build",
+        "build_time": 0.1166219711303711,
+        "error": "%Error: rtl/trading_strategy.v:131:17: syntax error, unexpected IDENTIFIER, expecting \"'{\"\n  131 |         integer i;\n      |                 ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=5.038 for more assistance.\n%Error: Exiting due to 1 error(s)\n"
+      },
+      "fpga_trading_system_tb": {
+        "status": "FAILED",
+        "phase": "build",
+        "build_time": 0.11188077926635742,
+        "error": "%Error: rtl/order_manager.v:152:17: syntax error, unexpected IDENTIFIER, expecting \"'{\"\n  152 |         integer i;\n      |                 ^\n        ... See the manual at https://verilator.org/verilator_doc.html?v=5.038 for more assistance.\n%Error: rtl/trading_strategy.v:131:17: syntax error, unexpected IDENTIFIER, expecting \"'{\"\n  131 |         integer i;\n      |                 ^\n%Error: Exiting due to 2 error(s)\n"
+      }
+    },
+    "total_time": 0.5353648662567139
+  }
+}

@@ -78,7 +78,9 @@ wire [PRICE_WIDTH-1:0] arb_profit;
 reg [PRICE_WIDTH-1:0] mm_bid_price, mm_ask_price;
 reg [VOLUME_WIDTH-1:0] mm_bid_volume, mm_ask_volume;
 reg mm_quote_valid;
-reg [1:0] mm_state;
+
+// Declare loop variable for always block
+integer i;
 
 // TWAP execution
 reg [31:0] twap_timer;
@@ -128,7 +130,6 @@ always @(posedge clk or negedge rst_n) begin
         strategy_decision_valid <= 1'b0;
         
         // Initialize price history
-        integer i;
         for (i = 0; i < 16; i = i + 1) begin
             price_history[i] <= {PRICE_WIDTH{1'b0}};
         end

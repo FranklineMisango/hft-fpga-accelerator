@@ -1,0 +1,183 @@
+$date
+	Tue Aug 26 15:59:21 2025
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module hjb_calculator_tb $end
+$var wire 64 ! optimal_bid [63:0] $end
+$var wire 64 " optimal_ask [63:0] $end
+$var wire 32 # latency_cycles [31:0] $end
+$var wire 1 $ calculation_done $end
+$var reg 1 % calculate_en $end
+$var reg 1 & clk $end
+$var reg 32 ' inventory [31:0] $end
+$var reg 64 ( mid_price [63:0] $end
+$var reg 1 ) rst_n $end
+$var reg 64 * volatility [63:0] $end
+$var real 1 + ask_real $end
+$var real 1 , bid_real $end
+$var integer 32 - input_file [31:0] $end
+$var integer 32 . inventory_int [31:0] $end
+$var real 1 / mid_price_real $end
+$var integer 32 0 output_file [31:0] $end
+$var real 1 1 volatility_real $end
+$scope module dut $end
+$var wire 1 % calculate_en $end
+$var wire 1 & clk $end
+$var wire 32 2 inventory [31:0] $end
+$var wire 64 3 mid_price [63:0] $end
+$var wire 1 ) rst_n $end
+$var wire 64 4 volatility [63:0] $end
+$var parameter 3 5 CALC_QUOTES $end
+$var parameter 3 6 CALC_RESERVATION $end
+$var parameter 3 7 CALC_SPREAD $end
+$var parameter 3 8 DONE $end
+$var parameter 32 9 GAMMA $end
+$var parameter 3 : IDLE $end
+$var parameter 32 ; K_PARAM $end
+$var reg 1 $ calculation_done $end
+$var reg 32 < cycle_counter [31:0] $end
+$var reg 32 = latency_cycles [31:0] $end
+$var reg 64 > optimal_ask [63:0] $end
+$var reg 64 ? optimal_bid [63:0] $end
+$var reg 64 @ reservation_price [63:0] $end
+$var reg 64 A spread [63:0] $end
+$var reg 3 B state [2:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b111111110000000000000000000000 ;
+b0 :
+b111101110011001100110011001101 9
+b100 8
+b10 7
+b1 6
+b11 5
+$end
+#0
+$dumpvars
+b0 B
+bx A
+bx @
+b0 ?
+b0 >
+b0 =
+b0 <
+b0 4
+b0 3
+b0 2
+r0 1
+bx 0
+r0 /
+bx .
+bx -
+r0 ,
+r0 +
+b0 *
+0)
+b0 (
+b0 '
+0&
+0%
+0$
+b0 #
+b0 "
+b0 !
+$end
+#2000
+1&
+#4000
+0&
+#6000
+1&
+#8000
+0&
+#10000
+1&
+1)
+#12000
+0&
+#14000
+1&
+#16000
+0&
+#18000
+1&
+#20000
+0&
+1%
+b11111111010011001100110011001100110011001100110011001100110011 *
+b11111111010011001100110011001100110011001100110011001100110011 4
+b101 '
+b101 2
+b100000011111000011010100000000000000000000000000000000000000000 (
+b100000011111000011010100000000000000000000000000000000000000000 3
+b0 -
+#22000
+b1 <
+b1 B
+1&
+#24000
+0&
+#26000
+b10 <
+b10 B
+b100000011111000011010011111111111111111111111111110110000000000 @
+1&
+#28000
+0&
+#30000
+b11 <
+b11 B
+b10000001111100001101010000000000000000000000000000000000 A
+1&
+#32000
+0&
+#34000
+b100 <
+b100 B
+b100000100111001011000100110100111111111111111111110110000000000 "
+b100000100111001011000100110100111111111111111111110110000000000 >
+b100000010110111011100011001010111111111111111111110110000000000 !
+b100000010110111011100011001010111111111111111111110110000000000 ?
+1&
+#36000
+0&
+#38000
+0%
+b10000000000000000000000000000011 0
+r1663593.999998808 +
+r6001.585937495343 ,
+b100 #
+b100 =
+1$
+1&
+#40000
+0&
+#42000
+b0 B
+1&
+#44000
+0&
+#46000
+b0 <
+0$
+1&
+#48000
+0&
+#50000
+1&
+#52000
+0&
+#54000
+1&
+#56000
+0&
+#58000
+1&

@@ -17,13 +17,15 @@ SIM_DIR = sim
 # RTL sources
 RTL_SOURCES = $(RTL_DIR)/market_data_processor.v \
               $(RTL_DIR)/order_manager.v \
-              $(RTL_DIR)/trading_strategy.v
+              $(RTL_DIR)/trading_strategy.v \
+              $(RTL_DIR)/hjb_calculator.v
 
 # Testbench sources
 TB_SOURCES = $(TB_DIR)/market_data_tb.v \
              $(TB_DIR)/order_manager_tb.v \
              $(TB_DIR)/trading_strategy_tb.v \
-             $(TB_DIR)/fpga_trading_system_tb.v
+             $(TB_DIR)/fpga_trading_system_tb.v \
+             $(TB_DIR)/hjb_calculator_tb.v
 
 # Simulation tools
 IVERILOG = iverilog
@@ -71,6 +73,14 @@ iverilog-trading-strategy: $(SIM_DIR)
 	cd $(SIM_DIR) && $(VVP) trading_strategy_tb
 	@echo "Trading Strategy simulation completed"
 
+.PHONY: iverilog-hjb
+iverilog-hjb: $(SIM_DIR)
+	@echo "Running HJB Calculator simulation..."
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(SIM_DIR)/hjb_calculator_tb \
+		$(RTL_DIR)/hjb_calculator.v $(TB_DIR)/hjb_calculator_tb.v
+	cd $(SIM_DIR) && $(VVP) hjb_calculator_tb
+	@echo "HJB Calculator simulation completed"
+
 .PHONY: iverilog-integration
 iverilog-integration: $(SIM_DIR)
 	@echo "Running Icarus Verilog integration simulation..."
@@ -102,6 +112,20 @@ verilator-market-data: $(SIM_DIR)
 		$(RTL_DIR)/market_data_processor.v $(TB_DIR)/market_data_tb.v \
 		$(CPP_TB_DIR)/market_data_generator.cpp
 	@echo "Verilator market data simulation completed"
+
+.PHONY: verilator-hjb-lib
+verilator-hjb-lib: $(SIM_DIR)
+	@echo "Building Verilator HJB library..."
+	$(VERILATOR) --cc --build -Wno-UNUSEDSIGNAL -Wno-UNUSEDPARAM \
+		--top-module hjb_calculator \
+		-I$(RTL_DIR) \
+		$(RTL_DIR)/hjb_calculator.v \
+		cpp_wrapper/hjb_wrapper.cpp \
+		cpp_wrapper/main.cpp \
+		-CFLAGS "-fPIC" \
+		-LDFLAGS "-shared -fPIC" \
+		--exe
+	@echo "HJB library built successfully"
 
 # Performance benchmarks
 .PHONY: benchmark

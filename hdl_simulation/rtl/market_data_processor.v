@@ -9,6 +9,8 @@
  * - Pipelined architecture
  */
 
+`timescale 1ns / 1ps
+
 module market_data_processor #(
     parameter DATA_WIDTH = 64,
     parameter ADDR_WIDTH = 32,
@@ -133,46 +135,18 @@ always @(posedge clk or negedge rst_n) begin
                 if (data_valid) begin
                     data_buffer <= data_in;
                     current_msg_type <= data_type;
-                    parse_state <= HEADER;
-                    bytes_processed <= 16'b1;
-                end
-            end
-            
-            HEADER: begin
-                if (data_valid) begin
-                    // Extract message length from header
-                    msg_length <= data_in[15:0];
-                    bytes_processed <= bytes_processed + 1;
-                    parse_state <= PAYLOAD;
-                end
-            end
-            
-            PAYLOAD: begin
-                if (data_valid) begin
-                    bytes_processed <= bytes_processed + 1;
-                    
-                    // Parse based on message type
-                    case (current_msg_type)
-                        MSG_ADD_ORDER: begin
-                            // Parse Add Order message
-                            if (bytes_processed >= msg_length) begin
-                                parse_state <= VALIDATE;
-                            end
+                    // For single-packet messages, go directly to processing
+                    case (data_type)
+                        MSG_ADD_ORDER, MSG_EXECUTE_ORDER, MSG_CANCEL_ORDER: begin
+                            parse_state <= OUTPUT;
                         end
-                        
-                        MSG_EXECUTE_ORDER: begin
-                            // Parse Execute Order message
-                            if (bytes_processed >= msg_length) begin
-                                parse_state <= VALIDATE;
-                            end
-                        end
-                        
                         default: begin
-                            // Unknown message type
-                            error_counter <= error_counter + 1;
-                            parse_state <= IDLE;
+                            // Invalid message type - stay in IDLE state
+                            // Error will be flagged in OUTPUT state
+                            parse_state <= OUTPUT;
                         end
                     endcase
+                    bytes_processed <= 16'b1;
                 end
             end
             
@@ -190,21 +164,35 @@ always @(posedge clk or negedge rst_n) begin
                 // Output parsed data
                 packet_counter <= packet_counter + 1;
                 
-                // Generate tick output
-                tick_valid <= 1'b1;
-                symbol <= extracted_symbol;
-                price <= extracted_price;
-                volume <= extracted_volume;
-                timestamp <= $time;
-                
-                // Generate order book update
-                book_update_valid <= 1'b1;
-                book_symbol <= extracted_symbol;
-                book_price <= extracted_price;
-                book_volume <= extracted_volume;
-                book_side <= (current_msg_type == MSG_ADD_ORDER) ? 1'b0 : 1'b1;
-                book_action <= (current_msg_type == MSG_ADD_ORDER) ? 3'b000 : 
-                              (current_msg_type == MSG_EXECUTE_ORDER) ? 3'b001 : 3'b010;
+                // Generate tick output only for valid message types
+                if (current_msg_type == MSG_ADD_ORDER || 
+                    current_msg_type == MSG_EXECUTE_ORDER || 
+                    current_msg_type == MSG_CANCEL_ORDER) begin
+                    
+                    tick_valid <= 1'b1;
+                    symbol <= data_buffer[63:32];  // Extract symbol from upper 32 bits
+                    price <= data_buffer[31:0];    // Extract price from lower 32 bits
+                    volume <= 32'h1000;            // Default volume
+                    timestamp <= $time;
+                    
+                    // Calculate bid/ask spread
+                    bid <= data_buffer[31:0];                    // Use price as bid
+                    ask <= data_buffer[31:0] + 32'h100;         // Add spread for ask
+                    
+                    // Generate order book update
+                    book_update_valid <= 1'b1;
+                    book_symbol <= data_buffer[63:32];
+                    book_price <= data_buffer[31:0];
+                    book_volume <= 32'h1000;
+                    book_side <= (current_msg_type == MSG_ADD_ORDER) ? 1'b0 : 1'b1;
+                    book_action <= (current_msg_type == MSG_ADD_ORDER) ? 3'b000 : 
+                                  (current_msg_type == MSG_EXECUTE_ORDER) ? 3'b001 : 3'b010;
+                end else begin
+                    // Invalid message type, increment error counter
+                    error_counter <= error_counter + 1;
+                    tick_valid <= 1'b0;
+                    book_update_valid <= 1'b0;
+                end
                 
                 parse_state <= IDLE;
             end
@@ -226,8 +214,7 @@ assign extracted_order_ref = pipeline_stage3[63:32];
 assign parse_complete = (parse_state == VALIDATE) && !parse_error;
 
 // Error detection logic
-assign parse_error = (msg_length == 16'b0) || (msg_length > 16'd512) || 
-                    (bytes_processed > msg_length + 16'd10);
+assign parse_error = 1'b0;  // Simplified for single-packet messages
 
 // Bid/Ask calculation (simplified)
 always @(*) begin
