@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 // HJB Optimal Quote Calculator for TradeChest Integration
 module hjb_calculator (
     input wire clk,

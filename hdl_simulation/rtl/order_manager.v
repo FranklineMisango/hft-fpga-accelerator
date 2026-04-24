@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 /*
  * Order Management Module
  * Hardware-accelerated order processing and risk management

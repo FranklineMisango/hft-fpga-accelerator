@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 /*
  * Trading Strategy Engine
  * Hardware-accelerated trading strategy execution
@@ -28,7 +30,7 @@ module trading_strategy #(
     input  wire [VOLUME_WIDTH-1:0]  tick_volume,
     
     // Strategy configuration
-    input  wire [3:0]               strategy_enable,    // Enable bits for each strategy
+    input  wire [1:0]               strategy_select,    // Select exactly one strategy mode
     input  wire [PRICE_WIDTH-1:0]   arb_min_profit,    // Minimum profit for arbitrage
     input  wire [PRICE_WIDTH-1:0]   mm_spread,         // Market making spread
     input  wire [VOLUME_WIDTH-1:0]  twap_target_vol,   // TWAP target volume
@@ -75,6 +77,7 @@ wire arb_opportunity;
 wire [PRICE_WIDTH-1:0] arb_profit;
 
 // Market making state
+reg [1:0] mm_state;
 reg [PRICE_WIDTH-1:0] mm_bid_price, mm_ask_price;
 reg [VOLUME_WIDTH-1:0] mm_bid_volume, mm_ask_volume;
 reg mm_quote_valid;
@@ -161,20 +164,36 @@ always @(posedge clk or negedge rst_n) begin
         if (tick_valid_d2) begin
             decision_counter <= decision_counter + 1;
             
-            // Strategy selection based on market conditions
-            if (strategy_enable[0] && arb_opportunity) begin
-                selected_strategy <= STRATEGY_ARBITRAGE;
-                strategy_decision_valid <= 1'b1;
-            end else if (strategy_enable[1] && mm_quote_valid) begin
-                selected_strategy <= STRATEGY_MARKET_MAKING;
-                strategy_decision_valid <= 1'b1;
-            end else if (strategy_enable[2] && twap_active && twap_time_slice) begin
-                selected_strategy <= STRATEGY_TWAP;
-                strategy_decision_valid <= 1'b1;
-            end else if (strategy_enable[3] && momentum_signal) begin
-                selected_strategy <= STRATEGY_MOMENTUM;
-                strategy_decision_valid <= 1'b1;
-            end
+            // Single-strategy mode: evaluate only the selected strategy
+            case (strategy_select)
+                STRATEGY_ARBITRAGE: begin
+                    if (arb_opportunity) begin
+                        selected_strategy <= STRATEGY_ARBITRAGE;
+                        strategy_decision_valid <= 1'b1;
+                    end
+                end
+
+                STRATEGY_MARKET_MAKING: begin
+                    if (mm_quote_valid) begin
+                        selected_strategy <= STRATEGY_MARKET_MAKING;
+                        strategy_decision_valid <= 1'b1;
+                    end
+                end
+
+                STRATEGY_TWAP: begin
+                    if (twap_active && twap_time_slice) begin
+                        selected_strategy <= STRATEGY_TWAP;
+                        strategy_decision_valid <= 1'b1;
+                    end
+                end
+
+                STRATEGY_MOMENTUM: begin
+                    if (momentum_signal) begin
+                        selected_strategy <= STRATEGY_MOMENTUM;
+                        strategy_decision_valid <= 1'b1;
+                    end
+                end
+            endcase
         end
         
         // Execute selected strategy
@@ -203,8 +222,8 @@ always @(posedge clk or negedge rst_n) begin
         update_market_making_state();
         update_twap_state();
         
-        // Update active strategies mask
-        active_strategy_mask <= {12'b0, strategy_enable};
+        // Expose the currently selected strategy as one-hot in low nibble
+        active_strategy_mask <= (16'b1 << strategy_select);
     end
 end
 
@@ -324,7 +343,7 @@ task update_twap_state;
                 twap_timer <= 32'b0;
                 twap_executed <= {VOLUME_WIDTH{1'b0}};
             end
-        end else if (strategy_enable[2] && twap_target_vol > 0) begin
+        end else if ((strategy_select == STRATEGY_TWAP) && twap_target_vol > 0) begin
             // Start TWAP if enabled and target volume is set
             twap_active <= 1'b1;
             twap_timer <= 32'b0;

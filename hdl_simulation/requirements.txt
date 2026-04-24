@@ -7,6 +7,8 @@ pandas>=1.3.0
 
 # Visualization
 matplotlib>=3.4.0
+pyqtgraph>=0.14.0
+PyQt5>=5.15.0
 
 # Testing and simulation
 pytest>=6.2.0
@@ -27,3 +29,6 @@ ipython>=7.0.0
 # Optional: Advanced analysis
 scipy>=1.7.0
 seaborn>=0.11.0
+
+# Market data ingestion
+websocket-client>=1.8.0
