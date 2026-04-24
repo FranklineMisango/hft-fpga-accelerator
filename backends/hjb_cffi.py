@@ -25,13 +25,13 @@ ffi = cffi.FFI()
 
 # Load C header definitions
 ffi.cdef("""
-    typedef struct {
+    typedef struct HJBQuote_C_impl {
         float bid_price;
         float ask_price;
         float bid_intensity;
         float ask_intensity;
         int convergence_iters;
-    } Quote;
+    } HJBQuote_C;
 
     typedef struct HJBSolverHandle HJBSolverHandle;
 
@@ -42,7 +42,7 @@ ffi.cdef("""
                  int NS, int NI, int NT,
                  float S_min, float S_max, float I_min, float I_max, float T);
     int hjb_solve(HJBSolverHandle* handle);
-    int hjb_get_quote(HJBSolverHandle* handle, float S, float I, int t, Quote* out_quote);
+    int hjb_get_quote(HJBSolverHandle* handle, float S, float I, int t, HJBQuote_C* out_quote);
     float hjb_get_bid_offset(HJBSolverHandle* handle, float S, float I, int t);
     float hjb_get_ask_offset(HJBSolverHandle* handle, float S, float I, int t);
     long hjb_get_gpu_memory_used(HJBSolverHandle* handle);
@@ -228,7 +228,7 @@ class HJBSolver:
         Raises:
             RuntimeError: If quote retrieval fails
         """
-        c_quote = ffi.new("Quote*")
+        c_quote = ffi.new("HJBQuote_C*")
         ret = lib.hjb_get_quote(self._handle, float(S), int(I), int(t), c_quote)
         if not ret:
             raise RuntimeError(f"Failed to get quote for S={S}, I={I}, t={t}")

@@ -1,4 +1,4 @@
-# VeriTrade: Institutional-Grade Trading Engine with FPGA in-loop support hardware
+# HFT Acceleration Trading Engine with Xilinx FPGA as an in-loop hardware and GPU as core balance support
 
 <div align="center">
 

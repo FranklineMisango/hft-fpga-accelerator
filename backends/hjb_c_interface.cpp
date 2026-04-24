@@ -3,12 +3,13 @@
 #include <cstring>
 #include <chrono>
 
+/* Don't use full hjb namespace to avoid Quote ambiguity */
 using namespace hjb;
 
 /* C++ implementation - store both params and solver in handle */
 struct _HPPInternal {
-  HJBParams* params;
-  HJBSolver* solver;
+  hjb::HJBParams* params;
+  hjb::HJBSolver* solver;
   float solve_time_ms;
 };
 
@@ -35,13 +36,13 @@ int hjb_init(HJBSolverHandle* handle,
     if (h->params) delete h->params;
     if (h->solver) delete h->solver;
 
-    h->params = new HJBParams();
+    h->params = new hjb::HJBParams();
     h->params->sigma = sigma;
     h->params->mu = mu;
     h->params->gamma = gamma;
     h->params->kappa = kappa;
     h->params->alpha = alpha;
-    h->params->lambda_j = lambda;  /* Note: C interface param is lambda */
+    h->params->lambda_j = lambda;
     h->params->NS = NS;
     h->params->NI = NI;
     h->params->NT = NT;
@@ -51,8 +52,7 @@ int hjb_init(HJBSolverHandle* handle,
     h->params->I_max = I_max;
     h->params->T = T;
 
-    /* Create solver with initialized params */
-    h->solver = new HJBSolver(*h->params);
+    h->solver = new hjb::HJBSolver(*h->params);
     return 1;
   } catch (...) {
     return 0;
@@ -76,13 +76,12 @@ int hjb_solve(HJBSolverHandle* handle) {
 }
 
 int hjb_get_quote(HJBSolverHandle* handle, float S, float I, int t,
-                  Quote* out_quote) {
+                  HJBQuote_C* out_quote) {
   _HPPInternal* h = HANDLE(handle);
   if (!h || !h->solver || !out_quote) return 0;
 
   try {
     hjb::Quote internal_q = h->solver->get_quotes((double)S, (double)I, (double)t);
-    /* Copy internal quote to output (cast double to float for C interface) */
     out_quote->bid_price = (float)internal_q.bid_price;
     out_quote->ask_price = (float)internal_q.ask_price;
     out_quote->bid_intensity = (float)internal_q.bid_intensity;

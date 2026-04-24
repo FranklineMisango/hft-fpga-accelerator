@@ -363,14 +363,7 @@ cuda-cffi-build:
 .PHONY: cuda-cffi-test
 cuda-cffi-test: cuda-cffi-build
 	@echo "Testing Python CFFI interface..."
-	@cd backends && python3 -c " \
-		from hjb_cffi import HJBSolver, SolverParams; \
-		solver = HJBSolver(); \
-		solver.initialize(sigma=0.1, mu=0.0, gamma=0.01); \
-		solver.solve(); \
-		quote = solver.get_quotes(100.0, 0, 0); \
-		print(f'[CFFI] Test PASSED: Quote at S=100, I=0: bid={quote.bid_price:.2f}, ask={quote.ask_price:.2f}'); \
-	"
+	@cd backends && python3 -c "from hjb_cffi import HJBSolver; s=HJBSolver(); s.initialize(sigma=0.1, mu=0.0, gamma=0.01, kappa=0.0001, alpha=0.01, lambda_jump=0.5, grid_points_S=64, grid_points_I=32, grid_points_t=256, S_min=95.0, S_max=105.0, I_min=-50.0, I_max=50.0, horizon=0.1); s.solve(); q=s.get_quotes(100.0, 0, 0); print('[CFFI] Test PASSED: Quote at S=100, I=0: bid={:.2f}, ask={:.2f}'.format(q.bid_price, q.ask_price))"
 
 .PHONY: cuda-cffi-demo
 cuda-cffi-demo: cuda-cffi-build
@@ -468,6 +461,43 @@ live-maker-dashboard:
 live-verilog-maker-dashboard:
 	@echo "Launching live dashboard with Verilog quote core + maker lifecycle backend..."
 	python3 scripts/live_trading_dashboard.py --mode live --backend maker --symbol btcusdt --stream depth --depth-update-ms 100 --enable-taker-hedge --maker-use-verilog-quoter
+
+# New support module targets
+.PHONY: iverilog-risk-manager
+iverilog-risk-manager: $(SIM_DIR)
+	@echo "Running Risk Manager simulation..."
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(SIM_DIR)/risk_manager_tb \
+		$(RTL_DIR)/risk_manager.v $(TB_DIR)/risk_manager_tb.v
+	cd $(SIM_DIR) && $(VVP) risk_manager_tb
+	@echo "Risk Manager simulation completed"
+
+.PHONY: iverilog-pnl-tracker
+iverilog-pnl-tracker: $(SIM_DIR)
+	@echo "Running PnL Tracker simulation..."
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(SIM_DIR)/pnl_tracker_tb \
+		$(RTL_DIR)/pnl_tracker.v $(TB_DIR)/pnl_tracker_tb.v
+	cd $(SIM_DIR) && $(VVP) pnl_tracker_tb
+	@echo "PnL Tracker simulation completed"
+
+.PHONY: iverilog-order-book
+iverilog-order-book: $(SIM_DIR)
+	@echo "Running Order Book simulation..."
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(SIM_DIR)/order_book_tb \
+		$(RTL_DIR)/order_book.v $(TB_DIR)/order_book_tb.v
+	cd $(SIM_DIR) && $(VVP) order_book_tb
+	@echo "Order Book simulation completed"
+
+.PHONY: iverilog-latency-monitor
+iverilog-latency-monitor: $(SIM_DIR)
+	@echo "Running Latency Monitor simulation..."
+	$(IVERILOG) $(IVERILOG_FLAGS) -o $(SIM_DIR)/latency_monitor_tb \
+		$(RTL_DIR)/latency_monitor.v $(TB_DIR)/latency_monitor_tb.v
+	cd $(SIM_DIR) && $(VVP) latency_monitor_tb
+	@echo "Latency Monitor simulation completed"
+
+.PHONY: iverilog-support-modules
+iverilog-support-modules: iverilog-risk-manager iverilog-pnl-tracker iverilog-order-book iverilog-latency-monitor
+	@echo "All support module simulations completed"
 
 .PHONY: iverilog-maker-quoter
 iverilog-maker-quoter: $(SIM_DIR)

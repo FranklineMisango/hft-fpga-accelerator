@@ -1,0 +1,1 @@
+{"sigma": 0.1, "mu": 0.0, "gamma": 0.01, "kappa": 0.0001, "alpha": 0.01, "lambda_jump": 0.5, "grid_points_S": 64, "grid_points_I": 32, "grid_points_t": 256, "S_min": 95.0, "S_max": 105.0, "I_min": -50.0, "I_max": 50.0, "horizon": 0.1}

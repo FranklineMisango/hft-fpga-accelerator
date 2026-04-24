@@ -8,14 +8,14 @@ extern "C" {
 /* Opaque solver handle - implementation detail hidden from interface */
 typedef void* HJBSolverHandle;
 
-/* Quote struct for C interface */
+/* Quote struct for C interface - renamed to avoid hjb::Quote conflict */
 typedef struct {
   float bid_price;
   float ask_price;
   float bid_intensity;
   float ask_intensity;
   int convergence_iters;
-} Quote;
+} HJBQuote_C;
 
 /* Create solver instance */
 HJBSolverHandle* hjb_create_solver();
@@ -35,7 +35,7 @@ int hjb_solve(HJBSolverHandle* handle);
 /* Get quote for given (S, I, t)
  * Returns 1 on success, 0 on out-of-bounds */
 int hjb_get_quote(HJBSolverHandle* handle, float S, float I, int t,
-                  Quote* out_quote);
+                  HJBQuote_C* out_quote);
 
 /* Get bid at given (S, I, t) as percentage offset from S
  * Returns offset or -999.0 on error */
