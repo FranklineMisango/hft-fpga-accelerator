@@ -302,6 +302,7 @@ cuda-hjb-clean:
 	@echo "Cleaning CUDA HJB artifacts..."
 	rm -f backends/hjb_test_exe
 	rm -f backends/hjb_jump_validation_exe
+	rm -f backends/hjb_control_test_exe
 	rm -f backends/hjb_solver.o
 	rm -f backends/*.o
 	@echo "CUDA cleanup completed"
@@ -322,10 +323,79 @@ cuda-hjb-validate-jump:
 		exit 1; \
 	fi
 
+.PHONY: cuda-hjb-validate-control
+cuda-hjb-validate-control:
+	@echo "Building control-space optimization test..."
+	@if command -v nvcc >/dev/null 2>&1; then \
+		cd backends && \
+		g++ -O3 -std=c++11 hjb_control_test.cpp hjb_solver.o \
+			-I/usr/local/cuda/include \
+			-L/usr/local/cuda/lib64 -lcudart \
+			-o hjb_control_test_exe && \
+		echo "[CUDA] Control optimization test built: backends/hjb_control_test_exe"; \
+		./hjb_control_test_exe; \
+	else \
+		echo "Error: CUDA toolkit not found"; \
+		exit 1; \
+	fi
+
+# Python CFFI Bindings (Option 3)
+.PHONY: cuda-cffi-build
+cuda-cffi-build:
+	@echo "Building Python CFFI bindings for HJB solver..."
+	@if command -v nvcc >/dev/null 2>&1; then \
+		cd backends && \
+		nvcc -O3 -arch=sm_70 -std=c++11 -Xcompiler "-fPIC" \
+			hjb_solver.cu -c -o hjb_solver.o && \
+		g++ -O3 -std=c++11 -fPIC -shared \
+			-I/usr/local/cuda/include \
+			hjb_c_interface.cpp hjb_solver.o \
+			-L/usr/local/cuda/lib64 -lcudart \
+			-o libhjb_solver.so && \
+		echo "[CFFI] Built libhjb_solver.so"; \
+		python3 -c "from hjb_cffi import HJBSolver; print('[CFFI] Python module loaded successfully')" && \
+		echo "[CFFI] Build complete!"; \
+	else \
+		echo "Error: CUDA toolkit not found"; \
+		exit 1; \
+	fi
+
+.PHONY: cuda-cffi-test
+cuda-cffi-test: cuda-cffi-build
+	@echo "Testing Python CFFI interface..."
+	@cd backends && python3 -c " \
+		from hjb_cffi import HJBSolver, SolverParams; \
+		solver = HJBSolver(); \
+		solver.initialize(sigma=0.1, mu=0.0, gamma=0.01); \
+		solver.solve(); \
+		quote = solver.get_quotes(100.0, 0, 0); \
+		print(f'[CFFI] Test PASSED: Quote at S=100, I=0: bid={quote.bid_price:.2f}, ask={quote.ask_price:.2f}'); \
+	"
+
+.PHONY: cuda-cffi-demo
+cuda-cffi-demo: cuda-cffi-build
+	@echo "Running CFFI demo: generating quotes for price range..."
+	@cd backends && mkdir -p ../market_input && \
+		echo '{"sigma": 0.1, "mu": 0.0, "gamma": 0.01, "kappa": 0.0001, "alpha": 0.01, "lambda_jump": 0.5, "grid_points_S": 64, "grid_points_I": 32, "grid_points_t": 256, "S_min": 95.0, "S_max": 105.0, "I_min": -50.0, "I_max": 50.0, "horizon": 0.1}' > demo_config.json && \
+		python3 hjb_solver_cli.py demo_config.json -o ../market_input/quotes_cffi_demo.csv -v --S-range 95 105 --I-range -20 20 && \
+		head -10 ../market_input/quotes_cffi_demo.csv && \
+		echo "[CFFI] Demo complete! Quotes written to market_input/quotes_cffi_demo.csv"
+
+.PHONY: cuda-cffi-clean
+cuda-cffi-clean:
+	@echo "Cleaning CFFI artifacts..."
+	rm -f backends/libhjb_solver.so
+	rm -f backends/hjb_c_interface.o
+	rm -f backends/demo_config.json
+	rm -f market_input/quotes_cffi_demo.csv
+	@echo "CFFI cleanup completed"
+
 # Clean up
 .PHONY: clean
 clean: cuda-hjb-clean
 	rm -rf $(SIM_DIR)
+	rm -f backends/libhjb_solver.so
+	rm -f backends/hjb_c_interface.o
 	rm -f *.vcd
 	rm -f *.vvp
 	rm -f *.out

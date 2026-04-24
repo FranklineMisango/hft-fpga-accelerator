@@ -51,6 +51,10 @@ public:
     // Access raw value function (for debugging)
     double* get_value_function() const { return d_V; }
     
+    // Access optimal quotes (if computed)
+    double* get_optimal_bids() const { return d_optimal_bids; }
+    double* get_optimal_asks() const { return d_optimal_asks; }
+    
     // Grid accessors
     const HJBParams& get_params() const { return params_; }
     double* get_S_grid() const { return d_S; }
@@ -64,6 +68,8 @@ private:
     double* d_V_next;        // Temp buffer for next iteration
     double* d_S;              // Price grid [NS]
     double* d_I;              // Inventory grid [NI]
+    double* d_optimal_bids;   // Optimal bid quotes [NS * NI * NT]
+    double* d_optimal_asks;   // Optimal ask quotes [NS * NI * NT]
     double* d_params_gpu;     // Struct copy on device
     
     // Grind state
